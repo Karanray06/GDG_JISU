@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GDG Meetup Platform | Login</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #00f3ff;
+      --color-secondary: #bc13fe;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      max-width: 1000px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      /* For GSAP */
+      transform: scale(0.95);
+      /* For GSAP */
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .container:hover {
+      box-shadow: 0 0 60px rgba(0, 243, 255, 0.15);
+      border-color: rgba(0, 243, 255, 0.3);
+    }
+
+    .left-panel {
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.1) 0%, rgba(188, 19, 254, 0.1) 100%);
+      padding: 60px 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .gdg-logo {
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border: 2px solid var(--color-primary);
+      box-shadow: 0 0 20px var(--color-primary);
+    }
+
+    .left-panel h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .right-panel {
+      flex: 1;
+      padding: 60px 40px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .login-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .role-selector {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .role-btn:hover,
+    .role-btn.active {
+      border-color: var(--color-primary);
+      background: rgba(0, 243, 255, 0.1);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .login-btn:hover {
+      background: var(--color-primary);
+      color: #000;
+      box-shadow: 0 0 20px var(--color-primary);
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="logo-section">
+        <div class="gdg-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px;">
+            <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="#00f3ff" />
+          </svg>
+        </div>
+        <h1>GDG JIS University</h1>
+        <p>Connect, Learn, and Grow with Google Developer Technologies</p>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p style="color: #aaa; margin-bottom: 30px;">Sign in to access your dashboard</p>
+      </div>
+
+      <div class="role-selector">
+        <div class="role-btn active" id="leaderBtn" onclick="selectRole('leader')">
+          <h3 style="font-size: 1rem; margin-bottom: 5px;">Leader</h3>
+          <p style="font-size: 0.8rem;">Manage events</p>
+        </div>
+        <div class="role-btn" id="studentBtn" onclick="selectRole('student')">
+          <h3 style="font-size: 1rem; margin-bottom: 5px;">Student</h3>
+          <p style="font-size: 0.8rem;">Join events</p>
+        </div>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email Address" required />
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required />
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 25px; font-size: 0.9rem;">
+          <label style="display: flex; align-items: center; gap: 8px; color: #aaa;">
+            <input type="checkbox" /> Remember me
+          </label>
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+
+        <div style="text-align: center; margin-top: 25px; color: #aaa; font-size: 0.9rem;">
+          Don't have an account? <a href="#">Register Now</a>
+          <br><br>
+          <a href="/home.html" style="color: var(--color-secondary); font-size: 0.8rem;">Continue as Guest</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import gsap from 'gsap';
+    import '/src/main.js'; // Keep main.js for background
+
+    // Entrance Animation
+    window.addEventListener('load', () => {
+      gsap.to('.container', {
+        duration: 1.5,
+        opacity: 1,
+        scale: 1,
+        ease: 'power3.out',
+        delay: 0.2
+      });
+
+      gsap.from('.left-panel > *', {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        stagger: 0.2,
+        ease: 'power3.out',
+        delay: 0.5
+      });
+
+      gsap.from('.right-panel > *', {
+        duration: 1,
+        x: 30,
+        opacity: 0,
+        stagger: 0.1,
+        ease: 'power3.out',
+        delay: 0.8
+      });
+    });
+  </script>
+
+  <script>
+    let selectedRole = 'leader';
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.getElementById('leaderBtn').classList.toggle('active', role === 'leader');
+      document.getElementById('studentBtn').classList.toggle('active', role === 'student');
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      sessionStorage.setItem('userRole', selectedRole);
+      sessionStorage.setItem('userEmail', email);
+
+      document.body.style.transition = 'opacity 0.5s ease';
+      document.body.style.opacity = '0';
+
+      setTimeout(() => {
+        if (selectedRole === 'leader') {
+          window.location.href = 'leader-dashboard.html';
+        } else {
+          window.location.href = 'student-dashboard.html';
+        }
+      }, 500);
+    }
+  </script>
+</body>
+
+</html>

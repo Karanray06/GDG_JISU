@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard | GDG Meetup</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #00f3ff;
+      --color-secondary: #bc13fe;
+      --color-accent: #ff0055;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-logo {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-brand h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      color: #fff;
+      margin: 0;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-badge {
+      background: rgba(188, 19, 254, 0.1);
+      color: var(--color-secondary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid var(--color-secondary);
+    }
+
+    .logout-btn {
+      padding: 8px 20px;
+      background: transparent;
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .logout-btn:hover {
+      background: var(--color-accent);
+      color: #fff;
+      box-shadow: 0 0 15px var(--color-accent);
+    }
+
+    .dashboard-header {
+      padding: 40px 30px;
+      text-align: center;
+      margin: 0 auto;
+      padding: 20px 30px 60px;
+    }
+
+    .welcome-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .welcome-icon {
+      font-size: 2.5rem;
+    }
+
+    .welcome-text h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .welcome-text p {
+      color: #aaa;
+      font-size: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      font-family: 'Orbitron', sans-serif;
+      margin: 15px 0 8px;
+      color: #fff;
+    }
+
+    .stat-label {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      color: #fff;
+      border-left: 4px solid var(--color-primary);
+      padding-left: 15px;
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 50px;
+    }
+
+    .event-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 20px rgba(188, 19, 254, 0.1);
+    }
+
+    .event-header {
+      height: 140px;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(188, 19, 254, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .event-body {
+      padding: 25px;
+    }
+
+    .event-date {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .event-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .event-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .event-footer {
+      display: flex;
+      gap: 10px;
+    }
+
+    .event-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    .btn-register:hover {
+      background: var(--color-primary);
+      color: #000;
+      box-shadow: 0 0 15px var(--color-primary);
+    }
+
+    .btn-details {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    .btn-details:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .action-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .action-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .action-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .action-card p {
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--color-secondary);
+      color: var(--color-secondary);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+    }
+
+    .action-btn:hover {
+      background: var(--color-secondary);
+      color: #fff;
+      box-shadow: 0 0 15px var(--color-secondary);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #555;
+      font-size: 0.9rem;
+      margin-top: 60px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px;">
+          <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" fill="#00f3ff" />
+        </svg>
+      </div>
+      <h2>GDG JIS University</h2>
+    </div>
+    <div class="nav-user">
+      <span class="user-badge">Student</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="dashboard-header">
+    <h1>Welcome to GDG Community</h1>
+    <p style="color: #aaa;">Learn, Connect, and Build with Google Technologies</p>
+  </div>
+
+  <div class="container">
+    <!-- Notice Board Section -->
+    <div class="glass-panel"
+      style="padding: 30px; margin-bottom: 40px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--color-primary);">
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <h2 style="font-family: 'Orbitron'; margin: 0; color: #fff;">Notice Board: Cloud Study Jams Winners</h2>
+      </div>
+      <ul id="winnersList" style="list-style: none; padding: 0;">
+        <li style="padding: 15px; text-align: center; color: #aaa;">Loading winners...</li>
+      </ul>
+    </div>
+
+    <div class="welcome-card">
+      <div class="welcome-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width: 40px; height: 40px; color: var(--color-primary);">
+          <path
+            d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+          </path>
+        </svg>
+      </div>
+      <div class="welcome-text">
+        <h2>Hello, Developer!</h2>
+        <p>Ready to explore upcoming events and connect with fellow developers? Let's get started!</p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div style="display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+            <polyline points="13 2 13 9 20 9"></polyline>
+          </svg>
+        </div>
+        <div class="stat-number">5</div>
+        <div class="stat-label">My Registrations</div>
+      </div>
+
+      <div class="stat-card">
+        <div style="display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-number">12</div>
+        <div class="stat-label">Events Attended</div>
+      </div>
+
+      <div class="stat-card">
+        <div style="display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+          </svg>
+        </div>
+        <div class="stat-number">3</div>
+        <div class="stat-label">Certificates Earned</div>
+      </div>
+
+      <div class="stat-card">
+        <div style="display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+            </polygon>
+          </svg>
+        </div>
+        <div class="stat-number">850</div>
+        <div class="stat-label">Community Points</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Upcoming Events</h2>
+
+    <div class="events-grid">
+      <!-- New Git Event -->
+      <div class="event-card">
+        <div class="event-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 64px; height: 64px; color: #fff;">
+            <path
+              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+            </path>
+          </svg>
+        </div>
+        <div class="event-body">
+          <span class="event-date">Nov 18, 2025 • 6:00 PM</span>
+          <h3 class="event-title">Git & GitHub Deep Dive</h3>
+          <p class="event-description">Master version control, collaboration workflows, and open source contribution
+            strategies.</p>
+          <div class="event-footer">
+            <button class="event-btn btn-register" onclick="registerEvent('Git Workshop')">Register Now</button>
+            <button class="event-btn btn-details" onclick="viewDetails('Git Workshop')">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 64px; height: 64px; color: #fff;">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <div class="event-body">
+          <span class="event-date">Nov 20, 2025 • 4:00 PM</span>
+          <h3 class="event-title">Introduction to Firebase</h3>
+          <p class="event-description">Learn how to build powerful web and mobile applications using Firebase platform
+            and services.</p>
+          <div class="event-footer">
+            <button class="event-btn btn-register" onclick="registerEvent('Firebase Workshop')">Register Now</button>
+            <button class="event-btn btn-details" onclick="viewDetails('Firebase Workshop')">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 64px; height: 64px; color: #fff;">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
+        <div class="event-body">
+          <span class="event-date">Nov 25, 2025 • 2:00 PM</span>
+          <h3 class="event-title">Android Development Bootcamp</h3>
+          <p class="event-description">Deep dive into Android app development with Kotlin, Jetpack Compose, and modern
+            best practices.</p>
+          <div class="event-footer">
+            <button class="event-btn btn-register" onclick="registerEvent('Android Bootcamp')">Register Now</button>
+            <button class="event-btn btn-details" onclick="viewDetails('Android Bootcamp')">Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 64px; height: 64px; color: #fff;">
+            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+          </svg>
+        </div>
+        <div class="event-body">
+          <span class="event-date">Dec 02, 2025 • 5:00 PM</span>
+          <h3 class="event-title">Google Cloud Platform Essentials</h3>
+          <p class="event-description">Master cloud computing fundamentals with hands-on GCP workshops and real-world
+            scenarios.</p>
+          <div class="event-footer">
+            <button class="event-btn btn-register" onclick="registerEvent('GCP Workshop')">Register Now</button>
+            <button class="event-btn btn-details" onclick="viewDetails('GCP Workshop')">Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Hub -->
+    <h2 class="section-title">Learning Hub</h2>
+    <div class="glass-panel"
+      style="padding: 30px; margin-bottom: 50px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        <div>
+          <h3 style="font-family: 'Orbitron'; margin-bottom: 15px;">Featured Tech Talk</h3>
+          <div
+            style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+              src="https://www.youtube.com/embed/X4Q7d0CtYyU" title="YouTube video player" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family: 'Orbitron'; margin-bottom: 15px;">Study Resources</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li
+              style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1);">
+              <span style="font-size: 1.5rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-primary);">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </span>
+              <div>
+                <h4 style="margin-bottom: 5px;">Firebase Fundamentals PDF</h4>
+                <a href="#" style="color: var(--color-primary); font-size: 0.9rem;">Download Resource</a>
+              </div>
+            </li>
+            <li
+              style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1);">
+              <span style="font-size: 1.5rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-primary);">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </span>
+              <div>
+                <h4 style="margin-bottom: 5px;">Kotlin Starter Code</h4>
+                <a href="#" style="color: var(--color-primary); font-size: 0.9rem;">View Repository</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificate Gallery -->
+    <h2 class="section-title">My Certificates</h2>
+    <div
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px;">
+      <div class="certificate-card"
+        style="background: linear-gradient(135deg, #1a1a1a, #2a2a2a); padding: 20px; border-radius: 12px; border: 1px solid #333; text-align: center; transition: transform 0.3s ease;">
+        <div style="margin-bottom: 10px; display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 48px; height: 48px; color: var(--color-primary);">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+          </svg>
+        </div>
+        <h4 style="margin-bottom: 10px; font-family: 'Orbitron';">Web Dev Bootcamp</h4>
+        <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 15px;">Issued: Oct 2025</p>
+        <button
+          style="background: transparent; border: 1px solid var(--color-secondary); color: var(--color-secondary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;">Download</button>
+      </div>
+      <div class="certificate-card"
+        style="background: linear-gradient(135deg, #1a1a1a, #2a2a2a); padding: 20px; border-radius: 12px; border: 1px solid #333; text-align: center; transition: transform 0.3s ease;">
+        <div style="margin-bottom: 10px; display: flex; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 48px; height: 48px; color: var(--color-primary);">
+            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+          </svg>
+        </div>
+        <h4 style="margin-bottom: 10px; font-family: 'Orbitron';">Cloud Basics</h4>
+        <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 15px;">Issued: Sep 2025</p>
+        <button
+          style="background: transparent; border: 1px solid var(--color-secondary); color: var(--color-secondary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;">Download</button>
+      </div>
+    </div>
+
+    <h2 class="section-title">Quick Actions</h2>
+
+    <div class="main-grid">
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+            <polyline points="13 2 13 9 20 9"></polyline>
+          </svg>
+        </div>
+        <h3>My Tickets</h3>
+        <p>View and download your event tickets. Access QR codes for quick check-in at venues.</p>
+        <button class="action-btn" onclick="openSection('tickets')">View Tickets</button>
+      </div>
+
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <h3>Event Calendar</h3>
+        <p>Browse the complete schedule of upcoming meetups, workshops, and tech talks.</p>
+        <button class="action-btn" onclick="openSection('calendar')">Open Calendar</button>
+      </div>
+
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <h3>Learning Resources</h3>
+        <p>Access presentations, code samples, tutorials, and materials from past events.</p>
+        <button class="action-btn" onclick="openSection('resources')">Browse Resources</button>
+      </div>
+
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <h3>Get Help</h3>
+        <p>Need assistance? Connect with our support team for help with events, registration, or technical issues.</p>
+        <button class="action-btn" onclick="openSection('help')">Contact Support</button>
+      </div>
+
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
+            <path d="M2 12a9 9 0 0 1 8 9"></path>
+            <path d="M2 16a5 5 0 0 1 4 5"></path>
+            <line x1="2" y1="20" x2="2.01" y2="20"></line>
+          </svg>
+        </div>
+        <h3>Announcements</h3>
+        <p>Stay updated with the latest news, updates, and important information from GDG leaders.</p>
+        <button class="action-btn" onclick="openSection('announcements')">View Updates</button>
+      </div>
+
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 32px; height: 32px; color: var(--color-primary);">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+          </svg>
+        </div>
+        <h3>Achievements</h3>
+        <p>Track your progress, view earned certificates, and showcase your learning journey.</p>
+        <button class="action-btn" onclick="openSection('achievements')">My Achievements</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Google Developers Group | Building the Future Together
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+  <script>
+    function registerEvent(eventName) {
+      const btn = event.target;
+      if (btn.innerText === 'REGISTER NOW') {
+        btn.innerText = 'REGISTERED ✅';
+        btn.style.background = 'var(--color-primary)';
+        btn.style.color = '#000';
+        alert(`🎉 Registration Successful!\n\nYou've been registered for "${eventName}".`);
+      } else {
+        alert(`You are already registered for "${eventName}".`);
+      }
+    }
+
+    function viewDetails(eventName) {
+      alert(`📋 Event Details: ${eventName}\n\nJoin us for an immersive session on ${eventName}. Experts will guide you through the latest technologies and best practices.`);
+    }
+
+    function openSection(section) {
+      alert(`Opening ${section}...`);
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.clear();
+        window.location.href = '/';
+      }
+    }
+
+    // Load Winners
+    window.addEventListener('load', () => {
+      const winners = JSON.parse(localStorage.getItem('gdg_notices')) || [];
+      const list = document.getElementById('winnersList');
+      if (list) {
+        list.innerHTML = '';
+        if (winners.length === 0) {
+          list.innerHTML = '<li style="padding: 15px; text-align: center; color: #aaa;">No winners announced yet. Stay tuned!</li>';
+        } else {
+          winners.forEach(winner => {
+            const li = document.createElement('li');
+            li.style.cssText = 'padding: 15px; background: rgba(255,255,255,0.05); margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1);';
+            li.innerHTML = `
+              <span style="font-weight: bold; color: var(--color-primary); font-size: 1.1rem;">${winner.name}</span>
+              <span style="background: rgba(188, 19, 254, 0.2); color: var(--color-secondary); padding: 5px 10px; border-radius: 15px; font-size: 0.9rem;">${winner.rank}</span>
+            `;
+            list.appendChild(li);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
