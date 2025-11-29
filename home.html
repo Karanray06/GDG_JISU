@@ -9,24 +9,84 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500&display=swap"
         rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #00f3ff;
+            --color-secondary: #bc13fe;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-neon {
+            display: inline-block;
+            padding: 10px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--color-primary);
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-neon:hover {
+            background: var(--color-primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--color-primary);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        h1, h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+    </style>
 </head>
 
 <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
+    
     <nav
         style="position: fixed; top: 0; width: 100%; padding: 20px; z-index: 100; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);">
         <div class="logo" style="font-family: 'Orbitron'; font-weight: 700; font-size: 1.5rem; color: #fff;">
             GDG <span class="text-gradient">JIS UNIVERSITY</span>
         </div>
         <div class="links" style="display: flex; gap: 30px;">
-            <a href="/" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Home</a>
-            <a href="/events.html" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Events</a>
-            <a href="/team.html" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Team</a>
-            <a href="/login.html" class="btn-neon"
+            <a href="index.html" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Home</a>
+            <a href="events.html" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Events</a>
+            <a href="team.html" style="color: #fff; text-decoration: none; font-family: 'Orbitron';">Team</a>
+            <a href="login.html" class="btn-neon"
                 style="text-decoration: none; padding: 8px 20px; font-size: 0.9rem;">Login</a>
         </div>
     </nav>
 
-    <main>
+    <main style="position: relative; z-index: 1;">
         <section
             style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;">
             <h1 style="font-size: 5rem; margin-bottom: 20px; line-height: 1.1;">
@@ -38,8 +98,8 @@
                 Developer Groups.
             </p>
             <div style="display: flex; gap: 20px;">
-                <a href="/login.html" class="btn-neon">Join Community</a>
-                <a href="/events.html" class="btn-neon" style="--color-primary: var(--color-secondary);">Explore
+                <a href="login.html" class="btn-neon">Join Community</a>
+                <a href="events.html" class="btn-neon" style="--color-primary: var(--color-secondary);">Explore
                     Events</a>
             </div>
         </section>
@@ -58,7 +118,59 @@
         </section>
     </main>
 
-    <script type="module" src="/src/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js Background (Starfield)
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Stars
+        const geometry = new THREE.BufferGeometry();
+        const count = 2000;
+        const positions = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 10;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x00f3ff,
+            transparent: true,
+            opacity: 0.8,
+            sizeAttenuation: true
+        });
+
+        const stars = new THREE.Points(geometry, material);
+        scene.add(stars);
+
+        camera.position.z = 3;
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0002;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 
 </html>
